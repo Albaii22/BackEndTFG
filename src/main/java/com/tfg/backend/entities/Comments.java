@@ -19,6 +19,14 @@ public class Comments {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "post_id")
+    private Publications post;
+
     private String content;
     @Temporal(TemporalType.TIMESTAMP)
     private Date timestamp;

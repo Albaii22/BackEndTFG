@@ -19,9 +19,16 @@ public class Publications {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     private String content;
     @Temporal(TemporalType.TIMESTAMP)
     private Date timestamp;
     private int voteCount;
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comments> comments;
 }
