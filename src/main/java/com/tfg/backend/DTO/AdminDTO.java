@@ -7,7 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AdminDTO {
-    private String _id;
+    private int _id;
     private String username;
     private int privilege_level;
 }

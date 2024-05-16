@@ -9,9 +9,9 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CommentsDTO {
-    private String _id;
-    private String user_id;
-    private String post_id;
+    private int _id;
+    private int user_id;
+    private int post_id;
     private String content;
     private Date timestamp;
 }
