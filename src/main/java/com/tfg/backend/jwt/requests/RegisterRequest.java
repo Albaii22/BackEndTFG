@@ -1,5 +1,7 @@
 package com.tfg.backend.jwt.requests;
 
+import java.util.Date;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,7 +14,6 @@ import lombok.NoArgsConstructor;
 public class RegisterRequest {
     String username;
     String password;
-    String firstname;
-    String lastname;
-    String country; 
+    String email;
+    Date registrationDate; 
 }
