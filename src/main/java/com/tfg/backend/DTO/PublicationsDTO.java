@@ -9,8 +9,8 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PublicationsDTO {
-    private String _id;
-    private String user_id;
+    private int _id;
+    private int user_id;
     private String content;
     private Date timestamp;
     private int vote_count;

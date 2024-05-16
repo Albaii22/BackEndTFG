@@ -1,23 +1,24 @@
 package com.tfg.backend.mappers;
 
-import com.tfg.backend.entities.Admin;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.factory.Mappers;
+
 import com.tfg.backend.DTO.AdminDTO;
+import com.tfg.backend.entities.Admin;
 
-public class AdminMapper {
+@Mapper
+public interface AdminMapper {
 
-    public static AdminDTO toDto(Admin admin) {
-        return AdminDTO.builder()
-                ._id(admin.getId().toString())
-                .username(admin.getUsername())
-                .privilege_level(admin.getPrivilegeLevel())
-                .build();
-    }
+    AdminMapper INSTANCE = Mappers.getMapper(AdminMapper.class);
 
-    public static Admin toEntity(AdminDTO adminDto) {
-        return Admin.builder()
-                .id(adminDto.get_id() != null ? Long.parseLong(adminDto.get_id()) : null)
-                .username(adminDto.getUsername())
-                .privilegeLevel(adminDto.getPrivilege_level())
-                .build();
-    }
+    @Mapping(source = "id", target = "_id")
+    @Mapping(source = "username", target = "username")
+    @Mapping(source = "privilegeLevel", target = "privilege_level")
+    AdminDTO adminToAdminDTO(Admin admin);
+
+    @Mapping(source = "_id", target = "id")
+    @Mapping(source = "username", target = "username")
+    @Mapping(source = "privilege_level", target = "privilegeLevel")
+    Admin adminDTOToAdmin(AdminDTO adminDTO);
 }
