@@ -2,12 +2,16 @@ package com.tfg.backend.serviceIMP;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.tfg.backend.DTO.AdminDTO;
 import com.tfg.backend.entities.Admin;
+import com.tfg.backend.mappers.AdminMapper;
 import com.tfg.backend.repository.AdminRepository;
 import com.tfg.backend.service.AdminService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AdminServiceIMP implements AdminService {
@@ -16,24 +20,32 @@ public class AdminServiceIMP implements AdminService {
     private AdminRepository adminRepository;
 
     @Override
-    public List<Admin> getAllAdmins() {
-        return adminRepository.findAll();
+    public List<AdminDTO> getAllAdmins() {
+        List<Admin> admins = adminRepository.findAll();
+        return admins.stream()
+                     .map(AdminMapper.INSTANCE::adminToAdminDTO)
+                     .collect(Collectors.toList());
     }
 
     @Override
-    public Optional<Admin> getAdminById(Long id) {
-        return adminRepository.findById(id);
+    public Optional<AdminDTO> getAdminById(Long id) {
+        return adminRepository.findById(id)
+                              .map(AdminMapper.INSTANCE::adminToAdminDTO);
     }
 
     @Override
-    public Admin createAdmin(Admin admin) {
-        return adminRepository.save(admin);
+    public AdminDTO createAdmin(AdminDTO adminDTO) {
+        Admin admin = AdminMapper.INSTANCE.adminDTOToAdmin(adminDTO);
+        Admin createdAdmin = adminRepository.save(admin);
+        return AdminMapper.INSTANCE.adminToAdminDTO(createdAdmin);
     }
 
     @Override
-    public Admin updateAdmin(Long id, Admin admin) {
+    public AdminDTO updateAdmin(Long id, AdminDTO adminDTO) {
+        Admin admin = AdminMapper.INSTANCE.adminDTOToAdmin(adminDTO);
         admin.setId(id);
-        return adminRepository.save(admin);
+        Admin updatedAdmin = adminRepository.save(admin);
+        return AdminMapper.INSTANCE.adminToAdminDTO(updatedAdmin);
     }
 
     @Override
