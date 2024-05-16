@@ -1,28 +1,17 @@
 package com.tfg.backend.configuration;
 
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.info.Info;
-import org.springdoc.core.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.models.OpenAPI;
+
 @Configuration
+@OpenAPIDefinition(info = @Info(title = "QuizzMania", version = "v1"))
 public class SwaggerConfig {
-
     @Bean
-    public OpenAPI customOpenAPI() {
-        return new OpenAPI()
-                .info(new Info()
-                        .title("API Documentation")
-                        .version("1.0")
-                        .description("This is the API documentation for the BackEnd project"));
-    }
-
-    @Bean
-    public GroupedOpenApi publicApi() {
-        return GroupedOpenApi.builder()
-                .group("public")
-                .pathsToMatch("/**")
-                .build();
+    public OpenAPI customizeOpenAPI() {
+        return new OpenAPI();
     }
 }
