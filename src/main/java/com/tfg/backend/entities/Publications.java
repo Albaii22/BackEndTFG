@@ -1,4 +1,4 @@
-package com.fct.BackEnd.entities;
+package com.tfg.backend.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
