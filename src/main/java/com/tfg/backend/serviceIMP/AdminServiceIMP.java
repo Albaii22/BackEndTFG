@@ -32,7 +32,7 @@ public class AdminServiceIMP implements AdminService {
                          .collect(Collectors.toList());
         } catch (DataAccessException e) {
             logger.error("Failed to fetch all admins", e);
-            return Collections.emptyList(); 
+            return Collections.emptyList();
         }
     }
 
@@ -43,7 +43,7 @@ public class AdminServiceIMP implements AdminService {
                                   .map(this::convertToDTO);
         } catch (DataAccessException e) {
             logger.error("Failed to fetch admin by ID: {}", id, e);
-            return Optional.empty(); 
+            return Optional.empty();
         }
     }
 
@@ -61,15 +61,13 @@ public class AdminServiceIMP implements AdminService {
 
     @Override
     public AdminDTO updateAdmin(Long id, AdminDTO adminDTO) {
-        try {
-            Admin admin = convertToEntity(adminDTO);
-            admin.setId(id);
-            Admin updatedAdmin = adminRepository.save(admin);
-            return convertToDTO(updatedAdmin);
-        } catch (DataAccessException e) {
-            logger.error("Failed to update admin with ID: {}", id, e);
-            return null; 
-        }
+        return adminRepository.findById(id).map(existingAdmin -> {
+            existingAdmin.setUsername(adminDTO.getUsername());
+            return convertToDTO(adminRepository.save(existingAdmin));
+        }).orElseGet(() -> {
+            logger.error("Failed to update admin with ID: {}", id);
+            return null;
+        });
     }
 
     @Override
@@ -84,14 +82,12 @@ public class AdminServiceIMP implements AdminService {
     private AdminDTO convertToDTO(Admin admin) {
         return AdminDTO.builder()
                        .username(admin.getUsername())
-                       .privilege_level(admin.getPrivilegeLevel())
                        .build();
     }
 
     private Admin convertToEntity(AdminDTO adminDTO) {
         return Admin.builder()
                     .username(adminDTO.getUsername())
-                    .privilegeLevel(adminDTO.getPrivilege_level())
                     .build();
     }
 }
