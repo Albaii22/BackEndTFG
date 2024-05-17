@@ -23,6 +23,7 @@ public class User implements UserDetails {
     private String username;
     private String email;
     private String password;
+    
     @Temporal(TemporalType.TIMESTAMP)
     private Date registrationDate;
     
@@ -34,6 +35,11 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comments> comments;
+
+    @PrePersist
+    protected void onCreate() {
+        this.registrationDate = new Date();
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
