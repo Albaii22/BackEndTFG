@@ -5,11 +5,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.tfg.backend.DTO.PublicationsDTO;
 import com.tfg.backend.entities.Publications;
 import com.tfg.backend.other.Response;
 import com.tfg.backend.serviceIMP.PublicationServiceIMP;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -25,65 +27,77 @@ public class PublicationsController {
     @Autowired
     private PublicationServiceIMP publicationService;
 
-    @Operation(summary = "Creates a new publication", description = "Returns the created publication", tags = { "publications" })
+    @Operation(summary = "Creates a new publication", description = "Returns the created publication", tags = {
+            "publications" })
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Publication created", content = @Content(schema = @Schema(implementation = Publications.class))),
+            @ApiResponse(responseCode = "201", description = "Publication created", content = @Content(schema = @Schema(implementation = PublicationsDTO.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(schema = @Schema(implementation = Response.class))),
             @ApiResponse(responseCode = "409", description = "Conflict", content = @Content(schema = @Schema(implementation = Response.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = Response.class)))
     })
-    @PostMapping
-    public ResponseEntity<Publications> createPublicacion(@RequestBody Publications publication) {
-        Publications createdPublication = publicationService.createPublicacion(publication);
+    @PostMapping("/{userId}")
+    public ResponseEntity<PublicationsDTO> createPublicacion(
+            @RequestBody PublicationsDTO publicationDTO,
+            @Parameter(description = "The ID of the user who created the publication", required = true) @PathVariable Long userId) {
+        PublicationsDTO createdPublication = publicationService.save(publicationDTO, userId);
         return new ResponseEntity<>(createdPublication, HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Gets all publications", description = "Returns all publications", tags = { "publications" })
+    @Operation(summary = "Retrieves all publications", description = "Returns a list of all publications", tags = {
+            "publications" })
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(schema = @Schema(implementation = Publications.class))),
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved all publications", content = @Content(schema = @Schema(implementation = PublicationsDTO.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = Response.class)))
     })
     @GetMapping
-    public ResponseEntity<List<Publications>> getAllPublicaciones() {
-        List<Publications> publicationList = publicationService.getAllPublicaciones();
-        return new ResponseEntity<>(publicationList, HttpStatus.OK);
+    public ResponseEntity<List<PublicationsDTO>> getAllPublicaciones() {
+        List<PublicationsDTO> publications = publicationService.getAllPublicaciones();
+        return new ResponseEntity<>(publications, HttpStatus.OK);
     }
 
-    @Operation(summary = "Gets a publication by ID", description = "Returns a publication by ID", tags = { "publications" })
+    @Operation(summary = "Retrieves a publication by ID", description = "Returns a single publication", tags = {
+            "publications" })
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(schema = @Schema(implementation = Publications.class))),
-            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(implementation = Response.class))),
+            @ApiResponse(responseCode = "200", description = "Publication found", content = @Content(schema = @Schema(implementation = PublicationsDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Publication not found", content = @Content(schema = @Schema(implementation = Response.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = Response.class)))
     })
     @GetMapping("/{id}")
-    public ResponseEntity<Publications> getPublicacionById(@PathVariable Long id) {
-        Optional<Publications> publication = publicationService.getPublicacionById(id);
+    public ResponseEntity<PublicationsDTO> getPublicacionById(
+            @Parameter(description = "The ID of the publication", required = true) @PathVariable Long id) {
+        Optional<PublicationsDTO> publication = publicationService.getPublicacionById(id);
         return publication.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-                          .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @Operation(summary = "Updates a publication", description = "Returns the updated publication", tags = { "publications" })
+    @Operation(summary = "Updates a publication", description = "Returns the updated publication", tags = {
+            "publications" })
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Publication updated", content = @Content(schema = @Schema(implementation = Publications.class))),
+            @ApiResponse(responseCode = "200", description = "Publication updated", content = @Content(schema = @Schema(implementation = PublicationsDTO.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(schema = @Schema(implementation = Response.class))),
-            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(implementation = Response.class))),
+            @ApiResponse(responseCode = "404", description = "Publication not found", content = @Content(schema = @Schema(implementation = Response.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = Response.class)))
     })
     @PutMapping("/{id}")
-    public ResponseEntity<Publications> updatePublicacion(@PathVariable Long id, @RequestBody Publications publication) {
-        Publications updatedPublication = publicationService.updatePublicacion(id, publication);
+    public ResponseEntity<PublicationsDTO> updatePublicacion(
+            @Parameter(description = "The ID of the publication to update", required = true) @PathVariable Long id,
+            @RequestBody PublicationsDTO publicationDTO) {
+        PublicationsDTO updatedPublication = publicationService.updatePublicacion(id, publicationDTO);
         return new ResponseEntity<>(updatedPublication, HttpStatus.OK);
     }
 
-    @Operation(summary = "Deletes a publication", description = "Deletes a publication by ID", tags = { "publications" })
+    @Operation(summary = "Deletes a publication", description = "Deletes a publication by ID", tags = {
+            "publications" })
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Publication deleted", content = @Content(schema = @Schema(implementation = Response.class))),
-            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(implementation = Response.class))),
+            @ApiResponse(responseCode = "204", description = "Publication deleted", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Publication not found", content = @Content(schema = @Schema(implementation = Response.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = Response.class)))
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePublicacion(@PathVariable Long id) {
+    public ResponseEntity<Void> deletePublicacion(
+            @Parameter(description = "The ID of the publication to delete", required = true) @PathVariable Long id) {
         publicationService.deletePublicacion(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
 }

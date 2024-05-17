@@ -1,6 +1,7 @@
 package com.tfg.backend.DTO;
 
 import java.sql.Date;
+import java.util.List;
 
 import lombok.*;
 
@@ -9,9 +10,10 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PublicationsDTO {
-    private int _id;
-    private int user_id;
+    private Long id;
     private String content;
     private Date timestamp;
     private int vote_count;
+
+    List<CommentsDTO> comments;
 }
