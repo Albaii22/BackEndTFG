@@ -1,14 +1,13 @@
 package com.tfg.backend.service;
 
-import com.tfg.backend.entities.Publications;
-
+import com.tfg.backend.DTO.PublicationsDTO;
 import java.util.List;
 import java.util.Optional;
 
 public interface PublicationsService {
-    List<Publications> getAllPublicaciones();
-    Optional<Publications> getPublicacionById(Long id);
-    Publications createPublicacion(Publications publication);
-    Publications updatePublicacion(Long id, Publications publication);
+    List<PublicationsDTO> getAllPublicaciones();
+    Optional<PublicationsDTO> getPublicacionById(Long id);
+    PublicationsDTO save(PublicationsDTO publicationDTO, Long userId);
+    PublicationsDTO updatePublicacion(Long id, PublicationsDTO publicationDTO);
     void deletePublicacion(Long id);
 }
