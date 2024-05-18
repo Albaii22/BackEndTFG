@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface CommentsService {
     List<CommentsDTO> getAllComentarios();
     Optional<CommentsDTO> getComentarioById(Long id);
-    CommentsDTO createComentario(CommentsDTO commentsDTO);
+    CommentsDTO createComentario(CommentsDTO commentsDTO , Long userId);
     CommentsDTO updateComentario(Long id, CommentsDTO commentsDTO);
     void deleteComentario(Long id);
 }

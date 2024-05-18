@@ -25,6 +25,23 @@ public class CommentsController {
     @Autowired
     private CommentsService commentsService;
 
+    @Operation(summary = "Creates a new comment", description = "Returns the created comment", tags = {"comments"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Comment created", content = @Content(schema = @Schema(implementation = CommentsDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(schema = @Schema(implementation = Response.class))),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = Response.class)))
+    })
+    @PostMapping("/{userId}")
+    public ResponseEntity<CommentsDTO> createComment(
+            @RequestBody CommentsDTO commentsDTO,
+            @Parameter(description = "The ID of the user who created the comment", required = true) @PathVariable Long userId) {
+                if (userId == null || commentsDTO.getPublicationId() == null) {
+                        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                    }
+        CommentsDTO createdComment = commentsService.createComentario(commentsDTO, userId);
+        return new ResponseEntity<>(createdComment, HttpStatus.CREATED);
+    }
+
     @Operation(summary = "Retrieves all comments", description = "Returns a list of all comments", tags = {"comments"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved all comments", content = @Content(schema = @Schema(implementation = CommentsDTO.class))),
@@ -46,20 +63,8 @@ public class CommentsController {
     public ResponseEntity<CommentsDTO> getCommentById(
             @Parameter(description = "The ID of the comment", required = true) @PathVariable Long id) {
         Optional<CommentsDTO> comment = commentsService.getComentarioById(id);
-        return comment.map(ResponseEntity::ok)
+        return comment.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
-
-    @Operation(summary = "Creates a new comment", description = "Returns the created comment", tags = {"comments"})
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Comment created", content = @Content(schema = @Schema(implementation = CommentsDTO.class))),
-            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(schema = @Schema(implementation = Response.class))),
-            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = Response.class)))
-    })
-    @PostMapping
-    public ResponseEntity<CommentsDTO> createComment(@RequestBody CommentsDTO commentsDTO) {
-        CommentsDTO createdComment = commentsService.createComentario(commentsDTO);
-        return new ResponseEntity<>(createdComment, HttpStatus.CREATED);
     }
 
     @Operation(summary = "Updates a comment", description = "Returns the updated comment", tags = {"comments"})
