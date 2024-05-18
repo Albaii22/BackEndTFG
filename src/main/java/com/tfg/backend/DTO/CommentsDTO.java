@@ -12,4 +12,6 @@ public class CommentsDTO {
     private Long id;
     private String content;
     private Date timestamp;
+    private Long userId;
+    private Long publicationId;
 }
