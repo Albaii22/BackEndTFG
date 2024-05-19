@@ -2,6 +2,7 @@ package com.tfg.backend.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import java.util.Date;
 
@@ -22,9 +23,11 @@ public class Comments {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "publication_id")
+    @JsonBackReference
     private Publications publication;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private User user;
 }

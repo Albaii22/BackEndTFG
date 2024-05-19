@@ -5,6 +5,7 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.util.Collection;
 import java.util.Date;
@@ -32,7 +33,7 @@ public class User implements UserDetails {
 
     private String password;
 
-    private String profileImageUrl; // Añadir este campo
+    private String profileImageUrl;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date registrationDate;
@@ -41,9 +42,13 @@ public class User implements UserDetails {
     private Role role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    @ToString.Exclude
     private List<Publications> publications;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    @ToString.Exclude
     private List<Comments> comments;
 
     @PrePersist
@@ -76,5 +81,3 @@ public class User implements UserDetails {
         return true;
     }
 }
-
-

@@ -89,27 +89,13 @@ public class PublicationServiceIMP implements PublicationsService {
         }
     }
 
-    public Optional<String> getUsernameByPublicationId(Long publicationId) {
-        try {
-            Optional<Publications> publicationOpt = publicationRepository.findById(publicationId);
-            if (publicationOpt.isPresent()) {
-                Publications publication = publicationOpt.get();
-                User user = publication.getUser();
-                return Optional.ofNullable(user.getUsername());
-            } else {
-                return Optional.empty();
-            }
-        } catch (DataAccessException e) {
-            logger.error("Failed to fetch username by publication ID: {}", publicationId, e);
-            return Optional.empty();
-        }
-    }
-
     private PublicationsDTO convertToDTO(Publications publication) {
         PublicationsDTO dto = new PublicationsDTO();
         dto.setId(publication.getId());
         dto.setContent(publication.getContent());
         dto.setTimestamp(publication.getTimestamp());
+        dto.setUser_id(publication.getUser().getId().intValue());
+        dto.setVote_count(publication.getVoteCount());
         return dto;
     }
 

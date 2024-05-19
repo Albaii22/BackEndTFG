@@ -99,18 +99,4 @@ public class PublicationsController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @Operation(summary = "Get username by publication ID", description = "Returns the username of the user who created the publication", tags = {
-            "publications" })
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully retrieved username", content = @Content(schema = @Schema(implementation = String.class))),
-            @ApiResponse(responseCode = "404", description = "Publication not found", content = @Content(schema = @Schema(implementation = Response.class))),
-            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = Response.class)))
-    })
-    @GetMapping("/{id}/username")
-    public ResponseEntity<String> getUsernameByPublicationId(
-            @Parameter(description = "The ID of the publication", required = true) @PathVariable Long id) {
-        Optional<String> username = publicationService.getUsernameByPublicationId(id);
-        return username.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
 }
