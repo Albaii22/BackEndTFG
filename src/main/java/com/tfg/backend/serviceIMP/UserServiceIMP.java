@@ -43,6 +43,15 @@ public class UserServiceIMP implements UserService {
 
     @Override
     public User createUsuario(User user) {
+        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+            logger.error("Username already exists: {}", user.getUsername());
+            throw new IllegalArgumentException("Username already exists");
+        }
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+            logger.error("Email already exists: {}", user.getEmail());
+            throw new IllegalArgumentException("Email already exists");
+        }
+
         try {
             return userRepository.save(user);
         } catch (DataAccessException e) {
@@ -72,3 +81,4 @@ public class UserServiceIMP implements UserService {
         }
     }
 }
+
