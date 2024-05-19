@@ -32,6 +32,8 @@ public class User implements UserDetails {
 
     private String password;
 
+    private String profileImageUrl; // Añadir este campo
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date registrationDate;
 
@@ -74,4 +76,5 @@ public class User implements UserDetails {
         return true;
     }
 }
+
 

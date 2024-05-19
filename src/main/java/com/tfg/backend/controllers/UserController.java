@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.tfg.backend.entities.User;
 import com.tfg.backend.other.Response;
@@ -15,6 +16,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -105,5 +107,24 @@ public class UserController {
         Optional<Long> userId = userService.getUsuarioIdByUsername(username);
         return userId.map(id -> new ResponseEntity<>(id, HttpStatus.OK))
                      .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @Operation(summary = "Upload profile image", description = "Uploads a profile image for a user", tags = { "users" })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Image uploaded", content = @Content(schema = @Schema(implementation = User.class))),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(schema = @Schema(implementation = Response.class))),
+            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(implementation = Response.class))),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = Response.class)))
+    })
+    @PostMapping("/{id}/uploadProfileImage")
+    public ResponseEntity<?> uploadProfileImage(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
+        try {
+            User user = userService.uploadProfileImage(id, file);
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(new Response(e.getMessage()), HttpStatus.NOT_FOUND);
+        } catch (IOException e) {
+            return new ResponseEntity<>(new Response("Error uploading file"), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
