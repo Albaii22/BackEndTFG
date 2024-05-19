@@ -33,9 +33,15 @@ public class UserController {
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = Response.class)))
     })
     @PostMapping
-    public ResponseEntity<User> createUsuario(@RequestBody User user) {
-        User createdUser = userService.createUsuario(user);
-        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+    public ResponseEntity<?> createUsuario(@RequestBody User user) {
+        try {
+            User createdUser = userService.createUsuario(user);
+            return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(new Response(e.getMessage()), HttpStatus.CONFLICT);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new Response("Internal Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Operation(summary = "Gets all users", description = "Returns all users", tags = { "users" })
