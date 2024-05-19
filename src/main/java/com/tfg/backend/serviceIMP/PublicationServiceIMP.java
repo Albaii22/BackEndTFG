@@ -93,6 +93,7 @@ public class PublicationServiceIMP implements PublicationsService {
         PublicationsDTO dto = new PublicationsDTO();
         dto.setId(publication.getId());
         dto.setContent(publication.getContent());
+        dto.setTimestamp(publication.getTimestamp());
         return dto;
     }
 
