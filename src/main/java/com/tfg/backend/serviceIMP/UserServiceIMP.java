@@ -8,6 +8,9 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.tfg.backend.DTO.PublicationsDTO;
+import com.tfg.backend.DTO.UserDTO;
+import com.tfg.backend.entities.Publications;
 import com.tfg.backend.entities.User;
 import com.tfg.backend.repository.UserRepository;
 import com.tfg.backend.service.UserService;
@@ -19,8 +22,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceIMP implements UserService {
@@ -44,9 +49,12 @@ public class UserServiceIMP implements UserService {
     }
 
     @Override
-    public List<User> getAllUsuarios() {
+    public List<UserDTO> getAllUsuarios() {
         try {
-            return userRepository.findAll();
+            logger.info("Fetching all users");
+            List<User> users = userRepository.findAll();
+            logger.info("Number of users fetched: {}", users.size());
+            return users.stream().map(this::convertToDTO).collect(Collectors.toList());
         } catch (DataAccessException e) {
             logger.error("Failed to retrieve all users", e);
             return Collections.emptyList();
@@ -54,9 +62,17 @@ public class UserServiceIMP implements UserService {
     }
 
     @Override
-    public Optional<User> getUsuarioById(Long id) {
+    public Optional<UserDTO> getUsuarioById(Long id) {
         try {
-            return userRepository.findById(id);
+            logger.info("Fetching user with ID: {}", id);
+            Optional<User> user = userRepository.findById(id);
+            if (user.isPresent()) {
+                logger.info("User found: {}", user.get());
+                return Optional.of(convertToDTO(user.get()));
+            } else {
+                logger.warn("User with ID: {} not found", id);
+                return Optional.empty();
+            }
         } catch (DataAccessException e) {
             logger.error("Failed to fetch user by ID: {}", id, e);
             return Optional.empty();
@@ -64,18 +80,20 @@ public class UserServiceIMP implements UserService {
     }
 
     @Override
-    public User createUsuario(User user) {
-        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
-            logger.error("Username already exists: {}", user.getUsername());
+    public UserDTO createUsuario(UserDTO userDTO) {
+        if (userRepository.findByUsername(userDTO.getUsername()).isPresent()) {
+            logger.error("Username already exists: {}", userDTO.getUsername());
             throw new IllegalArgumentException("Username already exists");
         }
-        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-            logger.error("Email already exists: {}", user.getEmail());
+        if (userRepository.findByEmail(userDTO.getEmail()).isPresent()) {
+            logger.error("Email already exists: {}", userDTO.getEmail());
             throw new IllegalArgumentException("Email already exists");
         }
 
         try {
-            return userRepository.save(user);
+            User user = convertToEntity(userDTO);
+            user = userRepository.save(user);
+            return convertToDTO(user);
         } catch (DataAccessException e) {
             logger.error("Failed to create user", e);
             throw e;
@@ -83,10 +101,12 @@ public class UserServiceIMP implements UserService {
     }
 
     @Override
-    public User updateUsuario(Long id, User user) {
+    public UserDTO updateUsuario(Long id, UserDTO userDTO) {
         try {
+            User user = convertToEntity(userDTO);
             user.setId(id);
-            return userRepository.save(user);
+            user = userRepository.save(user);
+            return convertToDTO(user);
         } catch (DataAccessException e) {
             logger.error("Failed to update user with ID: {}", id, e);
             throw e;
@@ -103,24 +123,8 @@ public class UserServiceIMP implements UserService {
         }
     }
 
-    /**
-     * Obtiene el ID del usuario por nombre de usuario.
-     *
-     * @param username el nombre de usuario
-     * @return el ID del usuario
-     */
-    public Optional<Long> getUsuarioIdByUsername(String username) {
-        try {
-            Optional<User> user = userRepository.findByUsername(username);
-            return user.map(User::getId);
-        } catch (DataAccessException e) {
-            logger.error("Failed to fetch user by username: {}", username, e);
-            return Optional.empty();
-        }
-    }
-
     @Override
-    public User uploadProfileImage(Long id, MultipartFile file) throws IOException {
+    public UserDTO uploadProfileImage(Long id, MultipartFile file) throws IOException {
         Optional<User> userOptional = userRepository.findById(id);
         if (userOptional.isPresent()) {
             User user = userOptional.get();
@@ -130,11 +134,44 @@ public class UserServiceIMP implements UserService {
             Files.write(path, file.getBytes());
 
             user.setProfileImageUrl(path.toString());
+            user = userRepository.save(user);
 
-            return userRepository.save(user);
+            return convertToDTO(user);
         } else {
             throw new IllegalArgumentException("User not found");
         }
     }
-}
 
+    private UserDTO convertToDTO(User user) {
+        return UserDTO.builder()
+                .id(user.getId().toString())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .password(user.getPassword())
+                .profileImageUrl(user.getProfileImageUrl())
+                .registration_date(new Date(user.getRegistrationDate().getTime()))
+                .publications(user.getPublications().stream().map(this::convertPublicationToDTO).collect(Collectors.toList()))
+                .build();
+    }
+
+    private User convertToEntity(UserDTO userDTO) {
+        return User.builder()
+                .id(userDTO.getId() != null ? Long.parseLong(userDTO.getId()) : null)
+                .username(userDTO.getUsername())
+                .email(userDTO.getEmail())
+                .password(userDTO.getPassword())
+                .profileImageUrl(userDTO.getProfileImageUrl())
+                .registrationDate(new Date(userDTO.getRegistration_date().getTime()))
+                .build();
+    }
+
+    private PublicationsDTO convertPublicationToDTO(Publications publication) {
+        return PublicationsDTO.builder()
+                .id(publication.getId())
+                .content(publication.getContent())
+                .timestamp(publication.getTimestamp())
+                .user_id(publication.getUser().getId().intValue())
+                .vote_count(publication.getVoteCount())
+                .build();
+    }
+}

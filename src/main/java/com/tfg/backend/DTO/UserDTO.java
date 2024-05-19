@@ -1,6 +1,7 @@
 package com.tfg.backend.DTO;
 
-import java.sql.Date;
+import java.util.Date;
+import java.util.List;
 
 import lombok.*;
 
@@ -9,9 +10,12 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDTO {
-    private String _id;
+    private String id;
     private String username;
     private String email;
     private String password;
+    private String profileImageUrl;
     private Date registration_date;
-}
+
+    List<PublicationsDTO> publications;
+}   

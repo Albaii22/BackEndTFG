@@ -14,6 +14,7 @@ public class PublicationsDTO {
     private String content;
     private Date timestamp;
     private int vote_count;
+    private int user_id;
 
     List<CommentsDTO> comments;
 }
