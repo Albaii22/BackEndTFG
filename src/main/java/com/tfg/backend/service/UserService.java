@@ -11,4 +11,5 @@ public interface UserService {
     User createUsuario(User user);
     User updateUsuario(Long id, User user);
     void deleteUsuario(Long id);
+    Optional<Long> getUsuarioIdByUsername(String username);
 }
