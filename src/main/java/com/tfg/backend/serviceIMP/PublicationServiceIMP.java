@@ -89,6 +89,22 @@ public class PublicationServiceIMP implements PublicationsService {
         }
     }
 
+    public Optional<String> getUsernameByPublicationId(Long publicationId) {
+        try {
+            Optional<Publications> publicationOpt = publicationRepository.findById(publicationId);
+            if (publicationOpt.isPresent()) {
+                Publications publication = publicationOpt.get();
+                User user = publication.getUser();
+                return Optional.ofNullable(user.getUsername());
+            } else {
+                return Optional.empty();
+            }
+        } catch (DataAccessException e) {
+            logger.error("Failed to fetch username by publication ID: {}", publicationId, e);
+            return Optional.empty();
+        }
+    }
+
     private PublicationsDTO convertToDTO(Publications publication) {
         PublicationsDTO dto = new PublicationsDTO();
         dto.setId(publication.getId());
@@ -103,15 +119,13 @@ public class PublicationServiceIMP implements PublicationsService {
             publication.setId(dto.getId());
         }
         publication.setContent(dto.getContent());
-    
+
         publication.setTimestamp(new Date());
-    
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("No user found with ID: " + userId));
         publication.setUser(user);
-    
+
         return publication;
     }
-    
-
 }

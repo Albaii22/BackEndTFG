@@ -10,4 +10,5 @@ public interface PublicationsService {
     PublicationsDTO save(PublicationsDTO publicationDTO, Long userId);
     PublicationsDTO updatePublicacion(Long id, PublicationsDTO publicationDTO);
     void deletePublicacion(Long id);
+    Optional<String> getUsernameByPublicationId(Long publicationId);
 }
