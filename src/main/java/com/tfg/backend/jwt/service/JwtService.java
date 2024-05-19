@@ -9,6 +9,8 @@ import java.util.function.Function;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import com.tfg.backend.entities.User;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -25,6 +27,11 @@ public class JwtService {
     }
 
     private String getToken(Map<String,Object> extraClaims, UserDetails user) {
+        User currentUser = (User) user;
+            
+        extraClaims.put("username", currentUser.getUsername());
+        extraClaims.put("email", currentUser.getEmail());
+
         return Jwts
             .builder()
             .setClaims(extraClaims)
