@@ -123,6 +123,22 @@ public class UserServiceIMP implements UserService {
         }
     }
 
+      /**
+     * Obtiene el ID del usuario por nombre de usuario.
+     *
+     * @param username el nombre de usuario
+     * @return el ID del usuario
+     */
+    public Optional<Long> getUsuarioIdByUsername(String username) {
+        try {
+            Optional<User> user = userRepository.findByUsername(username);
+            return user.map(User::getId);
+        } catch (DataAccessException e) {
+            logger.error("Failed to fetch user by username: {}", username, e);
+            return Optional.empty();
+        }
+    }
+
     @Override
     public UserDTO uploadProfileImage(Long id, MultipartFile file) throws IOException {
         Optional<User> userOptional = userRepository.findById(id);

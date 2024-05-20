@@ -14,4 +14,5 @@ public interface UserService {
     UserDTO updateUsuario(Long id, UserDTO userDTO);
     void deleteUsuario(Long id);
     UserDTO uploadProfileImage(Long id, MultipartFile file) throws IOException;
+    Optional<Long> getUsuarioIdByUsername(String username);
 }
