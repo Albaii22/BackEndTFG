@@ -87,6 +87,20 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Gets user ID by username", description = "Returns the user ID by username", tags = { "users" })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(schema = @Schema(implementation = Long.class))),
+            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(implementation = Response.class))),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = Response.class)))
+    })
+    
+    @GetMapping("/username/{username}/id")
+    public ResponseEntity<Long> getUsuarioIdByUsername(@PathVariable String username) {
+        Optional<Long> userId = userService.getUsuarioIdByUsername(username);
+        return userId.map(id -> new ResponseEntity<>(id, HttpStatus.OK))
+                     .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
     @Operation(summary = "Uploads a profile image", description = "Uploads a profile image for a user by ID", tags = { "users" })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(schema = @Schema(implementation = UserDTO.class))),
