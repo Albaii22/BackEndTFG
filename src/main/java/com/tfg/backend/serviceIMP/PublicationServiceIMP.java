@@ -91,6 +91,19 @@ public class PublicationServiceIMP implements PublicationsService {
         }
     }
 
+    @Override
+    public List<PublicationsDTO> getPublicacionesByUserId(Long userId) {
+        try {
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new IllegalArgumentException("No user found with ID: " + userId));
+            List<Publications> publications = publicationRepository.findByUser(user);
+            return publications.stream().map(this::convertToDTO).collect(Collectors.toList());
+        } catch (DataAccessException e) {
+            logger.error("Failed to retrieve publications for user ID: {}", userId, e);
+            return Collections.emptyList();
+        }
+    }
+
     private PublicationsDTO convertToDTO(Publications publication) {
         return PublicationsDTO.builder()
                 .id(publication.getId())
@@ -98,9 +111,9 @@ public class PublicationServiceIMP implements PublicationsService {
                 .timestamp(publication.getTimestamp())
                 .user_id(publication.getUser().getId().intValue())
                 .vote_count(publication.getVoteCount())
-                .comments(publication.getComments() != null ? 
-                          publication.getComments().stream().map(this::convertCommentToDTO).collect(Collectors.toList()) 
-                          : Collections.emptyList())
+                .comments(publication.getComments() != null
+                        ? publication.getComments().stream().map(this::convertCommentToDTO).collect(Collectors.toList())
+                        : Collections.emptyList())
                 .build();
     }
 

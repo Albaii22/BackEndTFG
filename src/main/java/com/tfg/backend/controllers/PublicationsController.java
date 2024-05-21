@@ -99,4 +99,20 @@ public class PublicationsController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @Operation(summary = "Retrieves publications by user ID", description = "Returns a list of publications by the specified user ID", tags = {"publications"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved publications by user ID", content = @Content(schema = @Schema(implementation = PublicationsDTO.class))),
+            @ApiResponse(responseCode = "404", description = "User not found", content = @Content(schema = @Schema(implementation = Response.class))),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = Response.class)))
+    })
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<PublicationsDTO>> getPublicacionesByUserId(
+            @Parameter(description = "The ID of the user", required = true) @PathVariable Long userId) {
+        List<PublicationsDTO> publications = publicationService.getPublicacionesByUserId(userId);
+        if (publications.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(publications, HttpStatus.OK);
+    }
+
 }
