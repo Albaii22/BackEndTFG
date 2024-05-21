@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.tfg.backend.DTO.UserDTO;
-import com.tfg.backend.entities.User;
 import com.tfg.backend.other.Response;
 import com.tfg.backend.serviceIMP.UserServiceIMP;
 
@@ -51,7 +50,8 @@ public class UserController {
         return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @Operation(summary = "Creates a new user", description = "Creates a new user and returns the created user", tags = { "users" })
+    @Operation(summary = "Creates a new user", description = "Creates a new user and returns the created user", tags = {
+            "users" })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(schema = @Schema(implementation = UserDTO.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(schema = @Schema(implementation = Response.class))),
@@ -75,6 +75,19 @@ public class UserController {
         return ResponseEntity.ok(updatedUser);
     }
 
+    @Operation(summary = "Updates the aboutMe field of a user", description = "Updates the aboutMe field of an existing user by ID", tags = {
+            "users" })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(schema = @Schema(implementation = UserDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(implementation = Response.class))),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = Response.class)))
+    })
+    @PutMapping("/{id}/aboutMe")
+    public ResponseEntity<UserDTO> updateAboutMe(@PathVariable Long id, @RequestBody String aboutMe) {
+        UserDTO updatedUser = userService.updateAboutMe(id, aboutMe);
+        return ResponseEntity.ok(updatedUser);
+    }
+
     @Operation(summary = "Deletes a user", description = "Deletes a user by ID", tags = { "users" })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "No Content", content = @Content(schema = @Schema(implementation = Response.class))),
@@ -87,21 +100,23 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "Gets user ID by username", description = "Returns the user ID by username", tags = { "users" })
+    @Operation(summary = "Gets user ID by username", description = "Returns the user ID by username", tags = {
+            "users" })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(schema = @Schema(implementation = Long.class))),
             @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(implementation = Response.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = Response.class)))
     })
-    
+
     @GetMapping("/username/{username}/id")
     public ResponseEntity<Long> getUsuarioIdByUsername(@PathVariable String username) {
         Optional<Long> userId = userService.getUsuarioIdByUsername(username);
         return userId.map(id -> new ResponseEntity<>(id, HttpStatus.OK))
-                     .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @Operation(summary = "Uploads a profile image", description = "Uploads a profile image for a user by ID", tags = { "users" })
+    @Operation(summary = "Uploads a profile image", description = "Uploads a profile image for a user by ID", tags = {
+            "users" })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(schema = @Schema(implementation = UserDTO.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(schema = @Schema(implementation = Response.class))),

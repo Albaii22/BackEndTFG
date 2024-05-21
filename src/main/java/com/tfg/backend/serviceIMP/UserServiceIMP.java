@@ -125,12 +125,7 @@ public class UserServiceIMP implements UserService {
         }
     }
 
-      /**
-     * Obtiene el ID del usuario por nombre de usuario.
-     *
-     * @param username el nombre de usuario
-     * @return el ID del usuario
-     */
+    @Override
     public Optional<Long> getUsuarioIdByUsername(String username) {
         try {
             Optional<User> user = userRepository.findByUsername(username);
@@ -160,12 +155,26 @@ public class UserServiceIMP implements UserService {
         }
     }
 
+    @Override
+    public UserDTO updateAboutMe(Long id, String aboutMe) {
+        Optional<User> userOptional = userRepository.findById(id);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            user.setAboutMe(aboutMe);
+            user = userRepository.save(user);
+            return convertToDTO(user);
+        } else {
+            throw new IllegalArgumentException("User not found");
+        }
+    }
+
     private UserDTO convertToDTO(User user) {
         return UserDTO.builder()
                 .id(user.getId().toString())
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .password(user.getPassword())
+                .aboutMe(user.getAboutMe())
                 .profileImageUrl(user.getProfileImageUrl())
                 .registration_date(new Date(user.getRegistrationDate().getTime()))
                 .publications(user.getPublications().stream().map(this::convertPublicationToDTO).collect(Collectors.toList()))
@@ -178,6 +187,7 @@ public class UserServiceIMP implements UserService {
                 .username(userDTO.getUsername())
                 .email(userDTO.getEmail())
                 .password(userDTO.getPassword())
+                .aboutMe(userDTO.getAboutMe())
                 .profileImageUrl(userDTO.getProfileImageUrl())
                 .registrationDate(new Date(userDTO.getRegistration_date().getTime()))
                 .build();
