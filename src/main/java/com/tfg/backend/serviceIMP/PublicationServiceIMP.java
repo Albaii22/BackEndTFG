@@ -7,6 +7,8 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.tfg.backend.DTO.PublicationsDTO;
+import com.tfg.backend.DTO.CommentsDTO;
+import com.tfg.backend.entities.Comments;
 import com.tfg.backend.entities.Publications;
 import com.tfg.backend.entities.User;
 import com.tfg.backend.repository.PublicationsRepository;
@@ -90,13 +92,24 @@ public class PublicationServiceIMP implements PublicationsService {
     }
 
     private PublicationsDTO convertToDTO(Publications publication) {
-        PublicationsDTO dto = new PublicationsDTO();
-        dto.setId(publication.getId());
-        dto.setContent(publication.getContent());
-        dto.setTimestamp(publication.getTimestamp());
-        dto.setUser_id(publication.getUser().getId().intValue());
-        dto.setVote_count(publication.getVoteCount());
-        return dto;
+        return PublicationsDTO.builder()
+                .id(publication.getId())
+                .content(publication.getContent())
+                .timestamp(publication.getTimestamp())
+                .user_id(publication.getUser().getId().intValue())
+                .vote_count(publication.getVoteCount())
+                .comments(publication.getComments().stream().map(this::convertCommentToDTO).collect(Collectors.toList()))
+                .build();
+    }
+
+    private CommentsDTO convertCommentToDTO(Comments comment) {
+        return CommentsDTO.builder()
+                .id(comment.getId())
+                .content(comment.getContent())
+                .timestamp(comment.getTimestamp())
+                .userId(comment.getUser().getId())
+                .publicationId(comment.getPublication().getId())
+                .build();
     }
 
     private Publications convertToEntity(PublicationsDTO dto, Long userId) {
