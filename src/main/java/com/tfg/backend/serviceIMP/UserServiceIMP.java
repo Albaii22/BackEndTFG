@@ -177,7 +177,8 @@ public class UserServiceIMP implements UserService {
                 .aboutMe(user.getAboutMe())
                 .profileImageUrl(user.getProfileImageUrl())
                 .registration_date(new Date(user.getRegistrationDate().getTime()))
-                .publications(user.getPublications().stream().map(this::convertPublicationToDTO).collect(Collectors.toList()))
+                .publications(
+                        user.getPublications().stream().map(this::convertPublicationToDTO).collect(Collectors.toList()))
                 .build();
     }
 
@@ -200,9 +201,9 @@ public class UserServiceIMP implements UserService {
                 .timestamp(publication.getTimestamp())
                 .user_id(publication.getUser().getId().intValue())
                 .vote_count(publication.getVoteCount())
-                .comments(publication.getComments() != null ? 
-                          publication.getComments().stream().map(this::convertCommentToDTO).collect(Collectors.toList()) 
-                          : Collections.emptyList())
+                .comments(publication.getComments() != null
+                        ? publication.getComments().stream().map(this::convertCommentToDTO).collect(Collectors.toList())
+                        : Collections.emptyList())
                 .build();
     }
 
