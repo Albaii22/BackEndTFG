@@ -190,7 +190,9 @@ public class UserServiceIMP implements UserService {
                 .timestamp(publication.getTimestamp())
                 .user_id(publication.getUser().getId().intValue())
                 .vote_count(publication.getVoteCount())
-                .comments(publication.getComments().stream().map(this::convertCommentToDTO).collect(Collectors.toList()))
+                .comments(publication.getComments() != null ? 
+                          publication.getComments().stream().map(this::convertCommentToDTO).collect(Collectors.toList()) 
+                          : Collections.emptyList())
                 .build();
     }
 
