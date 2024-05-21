@@ -14,6 +14,7 @@ public class UserDTO {
     private String username;
     private String email;
     private String password;
+    private String aboutMe;
     private String profileImageUrl;
     private Date registration_date;
 

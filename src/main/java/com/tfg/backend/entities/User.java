@@ -33,6 +33,8 @@ public class User implements UserDetails {
 
     private String password;
 
+    private String aboutMe;
+
     private String profileImageUrl;
 
     @Temporal(TemporalType.TIMESTAMP)
