@@ -18,6 +18,7 @@ import com.tfg.backend.repository.UserRepository;
 import com.tfg.backend.service.UserService;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.persistence.EntityNotFoundException;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -103,17 +104,21 @@ public class UserServiceIMP implements UserService {
     }
 
     @Override
-    public UserDTO updateUsuario(Long id, UserDTO userDTO) {
-        try {
-            User user = convertToEntity(userDTO);
-            user.setId(id);
-            user = userRepository.save(user);
-            return convertToDTO(user);
-        } catch (DataAccessException e) {
-            logger.error("Failed to update user with ID: {}", id, e);
-            throw e;
-        }
+public UserDTO updateUsuario(Long id, UserDTO userDTO) {
+    try {
+        User existingUser = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
+        
+        existingUser.setUsername(userDTO.getUsername());
+        existingUser.setAboutMe(userDTO.getAboutMe());
+        existingUser.setProfileImageUrl(userDTO.getProfileImageUrl());
+
+        existingUser = userRepository.save(existingUser);
+        return convertToDTO(existingUser);
+    } catch (DataAccessException e) {
+        logger.error("Failed to update user with ID: {}", id, e);
+        throw e;
     }
+}
 
     @Override
     public void deleteUsuario(Long id) {
