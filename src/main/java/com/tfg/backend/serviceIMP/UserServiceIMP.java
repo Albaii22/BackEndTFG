@@ -104,21 +104,22 @@ public class UserServiceIMP implements UserService {
     }
 
     @Override
-public UserDTO updateUsuario(Long id, UserDTO userDTO) {
-    try {
-        User existingUser = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
-        
-        existingUser.setUsername(userDTO.getUsername());
-        existingUser.setAboutMe(userDTO.getAboutMe());
-        existingUser.setProfileImageUrl(userDTO.getProfileImageUrl());
+    public UserDTO updateUsuario(Long id, UserDTO userDTO) {
+        try {
+            User existingUser = userRepository.findById(id)
+                    .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        existingUser = userRepository.save(existingUser);
-        return convertToDTO(existingUser);
-    } catch (DataAccessException e) {
-        logger.error("Failed to update user with ID: {}", id, e);
-        throw e;
+            existingUser.setUsername(userDTO.getUsername());
+            existingUser.setAboutMe(userDTO.getAboutMe());
+            existingUser.setProfileImageUrl(userDTO.getProfileImageUrl());
+
+            existingUser = userRepository.save(existingUser);
+            return convertToDTO(existingUser);
+        } catch (DataAccessException e) {
+            logger.error("Failed to update user with ID: {}", id, e);
+            throw e;
+        }
     }
-}
 
     @Override
     public void deleteUsuario(Long id) {
@@ -142,23 +143,27 @@ public UserDTO updateUsuario(Long id, UserDTO userDTO) {
     }
 
     @Override
-    public UserDTO uploadProfileImage(Long id, MultipartFile file) throws IOException {
-        Optional<User> userOptional = userRepository.findById(id);
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
+public UserDTO uploadProfileImage(Long id, MultipartFile file) throws IOException {
+    Optional<User> userOptional = userRepository.findById(id);
+    if (userOptional.isPresent()) {
+        User user = userOptional.get();
 
-            String filename = file.getOriginalFilename();
-            Path path = Paths.get(uploadDir + filename);
-            Files.write(path, file.getBytes());
+        String filename = file.getOriginalFilename();
+        Path path = Paths.get(uploadDir, filename);
+        Files.write(path, file.getBytes());
 
-            user.setProfileImageUrl(path.toString());
-            user = userRepository.save(user);
+        String imageUrl = "image/" + filename;
+        user.setProfileImageUrl(imageUrl);
+        user = userRepository.save(user);
+        
+        System.out.println("Image URL: " + imageUrl);
 
-            return convertToDTO(user);
-        } else {
-            throw new IllegalArgumentException("User not found");
-        }
+        return convertToDTO(user);
+    } else {
+        throw new IllegalArgumentException("User not found");
     }
+}
+
 
     @Override
     public UserDTO updateAboutMe(Long id, String aboutMe) {
