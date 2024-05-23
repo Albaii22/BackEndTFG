@@ -19,6 +19,7 @@ import jakarta.transaction.Transactional;
 
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -104,13 +105,37 @@ public class PublicationServiceIMP implements PublicationsService {
         }
     }
 
+    public void toggleLike(Long publicationId, Long userId) {
+        try {
+            Publications publication = publicationRepository.findById(publicationId)
+                    .orElseThrow(() -> new IllegalArgumentException("Publication not found"));
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+            if (publication.getLikedBy().contains(user)) {
+                publication.getLikedBy().remove(user);
+                publication.setVote_count(publication.getVote_count() - 1);
+            } else {
+                publication.getLikedBy().add(user);
+                publication.setVote_count(publication.getVote_count() + 1);
+            }
+
+            publicationRepository.save(publication);
+        } catch (DataAccessException e) {
+            throw new RuntimeException("Error toggling like", e);
+        }
+    }
+
     private PublicationsDTO convertToDTO(Publications publication) {
         return PublicationsDTO.builder()
                 .id(publication.getId())
                 .content(publication.getContent())
                 .timestamp(publication.getTimestamp())
                 .user_id(publication.getUser().getId().intValue())
-                .vote_count(publication.getVoteCount())
+                .vote_count(publication.getVote_count())
+                .likedBy(publication.getLikedBy() != null ? 
+                    publication.getLikedBy().stream().map(User::getId).collect(Collectors.toSet()) : 
+                    Collections.emptySet())
                 .comments(publication.getComments() != null
                         ? publication.getComments().stream().map(this::convertCommentToDTO).collect(Collectors.toList())
                         : Collections.emptyList())
@@ -133,12 +158,12 @@ public class PublicationServiceIMP implements PublicationsService {
             publication.setId(dto.getId());
         }
         publication.setContent(dto.getContent());
-
         publication.setTimestamp(new Date());
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("No user found with ID: " + userId));
         publication.setUser(user);
+        publication.setLikedBy(new HashSet<>());
 
         return publication;
     }

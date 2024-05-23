@@ -210,7 +210,7 @@ public UserDTO uploadProfileImage(Long id, MultipartFile file) throws IOExceptio
                 .content(publication.getContent())
                 .timestamp(publication.getTimestamp())
                 .user_id(publication.getUser().getId().intValue())
-                .vote_count(publication.getVoteCount())
+                .vote_count(publication.getVote_count())
                 .comments(publication.getComments() != null
                         ? publication.getComments().stream().map(this::convertCommentToDTO).collect(Collectors.toList())
                         : Collections.emptyList())

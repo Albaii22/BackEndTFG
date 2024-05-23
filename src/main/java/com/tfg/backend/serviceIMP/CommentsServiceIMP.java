@@ -33,14 +33,12 @@ public class CommentsServiceIMP implements CommentsService {
     @Autowired
     private PublicationsRepository publicationsRepository;
 
-    private final CommentsConverter commentsConverter = new CommentsConverter();
-
     @Override
     public List<CommentsDTO> getAllComentarios() {
         try {
             List<Comments> comments = commentsRepository.findAll();
             return comments.stream()
-                    .map(commentsConverter::convertToDTO)
+                    .map(this::convertToDTO)
                     .collect(Collectors.toList());
         } catch (DataAccessException e) {
             logger.error("Failed to retrieve all comments", e);
@@ -52,7 +50,7 @@ public class CommentsServiceIMP implements CommentsService {
     public Optional<CommentsDTO> getComentarioById(Long id) {
         try {
             return commentsRepository.findById(id)
-                    .map(commentsConverter::convertToDTO);
+                    .map(this::convertToDTO);
         } catch (DataAccessException e) {
             logger.error("Failed to fetch comment by ID: {}", id, e);
             return Optional.empty();
@@ -62,7 +60,6 @@ public class CommentsServiceIMP implements CommentsService {
     @Override
     public CommentsDTO createComentario(CommentsDTO commentsDTO, Long userId) {
         try {
-            // Verifica que userId y publicationId no sean null
             if (userId == null || commentsDTO.getPublicationId() == null) {
                 throw new IllegalArgumentException("User ID and Publication ID must not be null");
             }
@@ -73,9 +70,9 @@ public class CommentsServiceIMP implements CommentsService {
             Publications publication = publicationsRepository.findById(commentsDTO.getPublicationId())
                     .orElseThrow(() -> new IllegalArgumentException("Publication not found"));
 
-            Comments comment = commentsConverter.convertToEntity(commentsDTO, user, publication);
+            Comments comment = convertToEntity(commentsDTO, user, publication);
             comment = commentsRepository.save(comment);
-            return commentsConverter.convertToDTO(comment);
+            return convertToDTO(comment);
         } catch (DataAccessException e) {
             logger.error("Failed to create comment: {}", commentsDTO, e);
             throw new RuntimeException("Database error", e);
@@ -90,7 +87,7 @@ public class CommentsServiceIMP implements CommentsService {
                         existingComment.setContent(commentsDTO.getContent());
                         existingComment.setTimestamp(commentsDTO.getTimestamp());
                         commentsRepository.save(existingComment);
-                        return commentsConverter.convertToDTO(existingComment);
+                        return convertToDTO(existingComment);
                     })
                     .orElseThrow(() -> new IllegalArgumentException("No comment found with ID: " + id));
         } catch (DataAccessException e) {
@@ -109,13 +106,11 @@ public class CommentsServiceIMP implements CommentsService {
         }
     }
 
-    private class CommentsConverter {
-
         public CommentsDTO convertToDTO(Comments comment) {
             return CommentsDTO.builder()
                     .id(comment.getId())
                     .content(comment.getContent())
-                    .timestamp((java.sql.Date) comment.getTimestamp())
+                    .timestamp((java.util.Date) comment.getTimestamp())
                     .userId(comment.getUser().getId())
                     .publicationId(comment.getPublication().getId())
                     .build();
@@ -130,4 +125,4 @@ public class CommentsServiceIMP implements CommentsService {
             return comment;
         }
     }
-}
+
