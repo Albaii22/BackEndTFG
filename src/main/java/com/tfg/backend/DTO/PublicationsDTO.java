@@ -2,6 +2,7 @@ package com.tfg.backend.DTO;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import lombok.*;
 
@@ -17,4 +18,5 @@ public class PublicationsDTO {
     private int user_id;
 
     List<CommentsDTO> comments;
+    Set<Long> likedBy;
 }

@@ -7,6 +7,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 @Data
 @Builder
@@ -20,9 +22,11 @@ public class Publications {
     private Long id;
 
     private String content;
+    
     @Temporal(TemporalType.TIMESTAMP)
     private Date timestamp;
-    private int voteCount;
+    
+    private int vote_count;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
@@ -34,4 +38,12 @@ public class Publications {
     @JsonManagedReference
     @ToString.Exclude
     private List<Comments> comments;
+
+    @ManyToMany
+    @JoinTable(
+        name = "publication_likes",
+        joinColumns = @JoinColumn(name = "publication_id"),
+        inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> likedBy = new HashSet<>();
 }
