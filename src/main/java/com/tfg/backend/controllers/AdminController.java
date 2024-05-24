@@ -25,6 +25,7 @@ public class AdminController {
     @Autowired
     private AdminServiceIMP adminService;
 
+    // Endpoint to create a new admin
     @Operation(summary = "Creates a new admin", description = "Returns the created admin", tags = { "admins" })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Admin created", content = @Content(schema = @Schema(implementation = AdminDTO.class))),
@@ -38,6 +39,7 @@ public class AdminController {
         return new ResponseEntity<>(createdAdmin, HttpStatus.CREATED);
     }
 
+    // Endpoint to get all admins
     @Operation(summary = "Gets all admins", description = "Returns all admins", tags = { "admins" })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(schema = @Schema(implementation = AdminDTO.class))),
@@ -49,6 +51,7 @@ public class AdminController {
         return new ResponseEntity<>(adminList, HttpStatus.OK);
     }
 
+    // Endpoint to get an admin by ID
     @Operation(summary = "Gets an admin by ID", description = "Returns an admin by ID", tags = { "admins" })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(schema = @Schema(implementation = AdminDTO.class))),
@@ -62,6 +65,7 @@ public class AdminController {
                       .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    // Endpoint to update an admin
     @Operation(summary = "Updates an admin", description = "Returns the updated admin", tags = { "admins" })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Admin updated", content = @Content(schema = @Schema(implementation = AdminDTO.class))),
@@ -75,6 +79,7 @@ public class AdminController {
         return new ResponseEntity<>(updatedAdmin, HttpStatus.OK);
     }
 
+    // Endpoint to delete an admin
     @Operation(summary = "Deletes an admin", description = "Deletes an admin by ID", tags = { "admins" })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Admin deleted", content = @Content(schema = @Schema(implementation = Response.class))),

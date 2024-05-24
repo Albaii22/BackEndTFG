@@ -15,8 +15,8 @@ import lombok.NoArgsConstructor;
 public class Admin {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id; // Unique identifier for the admin
 
-    private String username;
-    private int privilegeLevel;
+    private String username; // Username of the admin
+    private int privilegeLevel; // Privilege level of the admin
 }

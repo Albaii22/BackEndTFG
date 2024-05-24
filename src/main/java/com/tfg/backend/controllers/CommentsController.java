@@ -25,6 +25,7 @@ public class CommentsController {
     @Autowired
     private CommentsService commentsService;
 
+    // Endpoint to create a new comment
     @Operation(summary = "Creates a new comment", description = "Returns the created comment", tags = {"comments"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Comment created", content = @Content(schema = @Schema(implementation = CommentsDTO.class))),
@@ -35,13 +36,14 @@ public class CommentsController {
     public ResponseEntity<CommentsDTO> createComment(
             @RequestBody CommentsDTO commentsDTO,
             @Parameter(description = "The ID of the user who created the comment", required = true) @PathVariable Long userId) {
-                if (userId == null || commentsDTO.getPublicationId() == null) {
-                        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-                    }
+        if (userId == null || commentsDTO.getPublicationId() == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         CommentsDTO createdComment = commentsService.createComentario(commentsDTO, userId);
         return new ResponseEntity<>(createdComment, HttpStatus.CREATED);
     }
 
+    // Endpoint to retrieve all comments
     @Operation(summary = "Retrieves all comments", description = "Returns a list of all comments", tags = {"comments"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved all comments", content = @Content(schema = @Schema(implementation = CommentsDTO.class))),
@@ -53,6 +55,7 @@ public class CommentsController {
         return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
+    // Endpoint to retrieve a comment by ID
     @Operation(summary = "Retrieves a comment by ID", description = "Returns a single comment", tags = {"comments"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Comment found", content = @Content(schema = @Schema(implementation = CommentsDTO.class))),
@@ -67,6 +70,7 @@ public class CommentsController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    // Endpoint to update a comment
     @Operation(summary = "Updates a comment", description = "Returns the updated comment", tags = {"comments"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Comment updated", content = @Content(schema = @Schema(implementation = CommentsDTO.class))),
@@ -82,6 +86,7 @@ public class CommentsController {
         return new ResponseEntity<>(updatedComment, HttpStatus.OK);
     }
 
+    // Endpoint to delete a comment
     @Operation(summary = "Deletes a comment", description = "Deletes a comment by ID", tags = {"comments"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Comment deleted", content = @Content),
@@ -94,5 +99,4 @@ public class CommentsController {
         commentsService.deleteComentario(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
 }

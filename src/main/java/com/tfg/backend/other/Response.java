@@ -9,12 +9,14 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+// Generic response object
 public class Response<T> {
-    String message;
-    T bodyDto;
-    Boolean result;
-    Object object;
+    String message; // Message describing the response
+    T bodyDto; // Data object associated with the response
+    Boolean result; // Result status of the operation
+    Object object; // Additional object associated with the response
 
+    // Constructors with different combinations of parameters
     public Response(String message, T bodyDto, Boolean result) {
         this.message = message;
         this.bodyDto = bodyDto;
@@ -41,6 +43,7 @@ public class Response<T> {
         this.message = message;
     }
 
+    // Getter and setter for the message field
     public String getMessage() {
         return message;
     }

@@ -27,6 +27,7 @@ public class PublicationsController {
         @Autowired
         private PublicationServiceIMP publicationService;
 
+        // Endpoint to create a new publication
         @Operation(summary = "Creates a new publication", description = "Returns the created publication", tags = {
                         "publications" })
         @ApiResponses(value = {
@@ -43,6 +44,7 @@ public class PublicationsController {
                 return new ResponseEntity<>(createdPublication, HttpStatus.CREATED);
         }
 
+        // Endpoint to retrieve all publications
         @Operation(summary = "Retrieves all publications", description = "Returns a list of all publications", tags = {
                         "publications" })
         @ApiResponses(value = {
@@ -55,6 +57,7 @@ public class PublicationsController {
                 return new ResponseEntity<>(publications, HttpStatus.OK);
         }
 
+        // Endpoint to retrieve a publication by ID
         @Operation(summary = "Retrieves a publication by ID", description = "Returns a single publication", tags = {
                         "publications" })
         @ApiResponses(value = {
@@ -70,6 +73,7 @@ public class PublicationsController {
                                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
         }
 
+        // Endpoint to update a publication
         @Operation(summary = "Updates a publication", description = "Returns the updated publication", tags = {
                         "publications" })
         @ApiResponses(value = {
@@ -86,6 +90,7 @@ public class PublicationsController {
                 return new ResponseEntity<>(updatedPublication, HttpStatus.OK);
         }
 
+        // Endpoint to delete a publication
         @Operation(summary = "Deletes a publication", description = "Deletes a publication by ID", tags = {
                         "publications" })
         @ApiResponses(value = {
@@ -100,6 +105,7 @@ public class PublicationsController {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
+        // Endpoint to retrieve publications by user ID
         @Operation(summary = "Retrieves publications by user ID", description = "Returns a list of publications by the specified user ID", tags = {
                         "publications" })
         @ApiResponses(value = {
@@ -117,6 +123,7 @@ public class PublicationsController {
                 return new ResponseEntity<>(publications, HttpStatus.OK);
         }
 
+        // Endpoint to toggle like on a publication
         @Operation(summary = "Toggles like on a publication", description = "Toggles like by user on a publication", tags = {
                         "publications" })
         @ApiResponses(value = {

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import com.tfg.backend.entities.Comments;
 
 @Repository
-public interface ComentsRepository extends JpaRepository<Comments, Long> {
+// Repository interface for managing Comments entities
+public interface CommentsRepository extends JpaRepository<Comments, Long> {
 
 }

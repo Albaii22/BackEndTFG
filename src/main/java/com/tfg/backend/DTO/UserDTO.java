@@ -10,13 +10,13 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDTO {
-    private String id;
-    private String username;
-    private String email;
-    private String password;
-    private String aboutMe;
-    private String profileImageUrl;
-    private Date registration_date;
+    private String id; // User identifier
+    private String username; // Username of the user
+    private String email; // Email of the user
+    private String password; // Password of the user
+    private String aboutMe; // Description or about me section of the user
+    private String profileImageUrl; // URL of the user's profile image
+    private Date registration_date; // Registration date of the user
 
-    List<PublicationsDTO> publications;
+    List<PublicationsDTO> publications; // List of publications created by the user
 }   

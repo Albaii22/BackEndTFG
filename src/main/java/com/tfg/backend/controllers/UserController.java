@@ -28,6 +28,7 @@ public class UserController {
         @Autowired
         private UserServiceIMP userService;
 
+        // Endpoint to get all users
         @Operation(summary = "Gets all users", description = "Returns a list of all users", tags = { "users" })
         @ApiResponses(value = {
                         @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(schema = @Schema(implementation = UserDTO.class))),
@@ -39,6 +40,7 @@ public class UserController {
                 return ResponseEntity.ok(users);
         }
 
+        // Endpoint to get a user by ID
         @Operation(summary = "Gets a user by ID", description = "Returns a user by ID", tags = { "users" })
         @ApiResponses(value = {
                         @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(schema = @Schema(implementation = UserDTO.class))),
@@ -51,6 +53,7 @@ public class UserController {
                 return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
         }
 
+        // Endpoint to create a new user
         @Operation(summary = "Creates a new user", description = "Creates a new user and returns the created user", tags = {
                         "users" })
         @ApiResponses(value = {
@@ -64,6 +67,7 @@ public class UserController {
                 return ResponseEntity.ok(newUser);
         }
 
+        // Endpoint to update a user
         @Operation(summary = "Updates a user", description = "Updates an existing user by ID", tags = { "users" })
         @ApiResponses(value = {
                         @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(schema = @Schema(implementation = UserDTO.class))),
@@ -76,6 +80,7 @@ public class UserController {
                 return ResponseEntity.ok(updatedUser);
         }
 
+        // Endpoint to update the aboutMe field of a user
         @Operation(summary = "Updates the aboutMe field of a user", description = "Updates the aboutMe field of an existing user by ID", tags = {
                         "users" })
         @ApiResponses(value = {
@@ -91,6 +96,7 @@ public class UserController {
                 return ResponseEntity.ok(updatedUser);
         }
 
+        // Endpoint to delete a user
         @Operation(summary = "Deletes a user", description = "Deletes a user by ID", tags = { "users" })
         @ApiResponses(value = {
                         @ApiResponse(responseCode = "204", description = "No Content", content = @Content(schema = @Schema(implementation = Response.class))),
@@ -103,6 +109,7 @@ public class UserController {
                 return ResponseEntity.noContent().build();
         }
 
+        // Endpoint to get user ID by username
         @Operation(summary = "Gets user ID by username", description = "Returns the user ID by username", tags = {
                         "users" })
         @ApiResponses(value = {
@@ -110,7 +117,6 @@ public class UserController {
                         @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(implementation = Response.class))),
                         @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = Response.class)))
         })
-
         @GetMapping("/username/{username}/id")
         public ResponseEntity<Long> getUsuarioIdByUsername(@PathVariable String username) {
                 Optional<Long> userId = userService.getUsuarioIdByUsername(username);
@@ -118,6 +124,7 @@ public class UserController {
                                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
         }
 
+        // Endpoint to upload a profile image
         @Operation(summary = "Uploads a profile image", description = "Uploads a profile image for a user by ID", tags = {
                         "users" })
         @ApiResponses(value = {

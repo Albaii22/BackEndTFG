@@ -31,15 +31,16 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+// Service implementation for managing users
 public class UserServiceIMP implements UserService {
 
     private static final Logger logger = LoggerFactory.getLogger(UserServiceIMP.class);
 
     @Autowired
-    private UserRepository userRepository;
+    private UserRepository userRepository; // Repository for user data
 
     @Value("${file.upload-dir}")
-    private String uploadDir;
+    private String uploadDir; // Directory for uploading files
 
     @PostConstruct
     public void init() {
@@ -51,6 +52,7 @@ public class UserServiceIMP implements UserService {
         }
     }
 
+    // Retrieves all users
     @Override
     public List<UserDTO> getAllUsuarios() {
         try {
@@ -64,6 +66,7 @@ public class UserServiceIMP implements UserService {
         }
     }
 
+    // Retrieves a user by ID
     @Override
     public Optional<UserDTO> getUsuarioById(Long id) {
         try {
@@ -82,6 +85,7 @@ public class UserServiceIMP implements UserService {
         }
     }
 
+    // Creates a new user
     @Override
     public UserDTO createUsuario(UserDTO userDTO) {
         if (userRepository.findByUsername(userDTO.getUsername()).isPresent()) {
@@ -103,6 +107,7 @@ public class UserServiceIMP implements UserService {
         }
     }
 
+    // Updates an existing user
     @Override
     public UserDTO updateUsuario(Long id, UserDTO userDTO) {
         try {
@@ -121,6 +126,7 @@ public class UserServiceIMP implements UserService {
         }
     }
 
+    // Deletes a user by ID
     @Override
     public void deleteUsuario(Long id) {
         try {
@@ -131,6 +137,7 @@ public class UserServiceIMP implements UserService {
         }
     }
 
+    // Retrieves user ID by username
     @Override
     public Optional<Long> getUsuarioIdByUsername(String username) {
         try {
@@ -142,29 +149,30 @@ public class UserServiceIMP implements UserService {
         }
     }
 
+    // Uploads a profile image for a user
     @Override
-public UserDTO uploadProfileImage(Long id, MultipartFile file) throws IOException {
-    Optional<User> userOptional = userRepository.findById(id);
-    if (userOptional.isPresent()) {
-        User user = userOptional.get();
+    public UserDTO uploadProfileImage(Long id, MultipartFile file) throws IOException {
+        Optional<User> userOptional = userRepository.findById(id);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
 
-        String filename = file.getOriginalFilename();
-        Path path = Paths.get(uploadDir, filename);
-        Files.write(path, file.getBytes());
+            String filename = file.getOriginalFilename();
+            Path path = Paths.get(uploadDir, filename);
+            Files.write(path, file.getBytes());
 
-        String imageUrl = "image/" + filename;
-        user.setProfileImageUrl(imageUrl);
-        user = userRepository.save(user);
+            String imageUrl = "image/" + filename;
+            user.setProfileImageUrl(imageUrl);
+            user = userRepository.save(user);
         
-        System.out.println("Image URL: " + imageUrl);
+            System.out.println("Image URL: " + imageUrl);
 
-        return convertToDTO(user);
-    } else {
-        throw new IllegalArgumentException("User not found");
+            return convertToDTO(user);
+        } else {
+            throw new IllegalArgumentException("User not found");
+        }
     }
-}
 
-
+    // Updates the 'About Me' section for a user
     @Override
     public UserDTO updateAboutMe(Long id, String aboutMe) {
         Optional<User> userOptional = userRepository.findById(id);
@@ -178,6 +186,7 @@ public UserDTO uploadProfileImage(Long id, MultipartFile file) throws IOExceptio
         }
     }
 
+    // Converts a User entity to UserDTO
     private UserDTO convertToDTO(User user) {
         return UserDTO.builder()
                 .id(user.getId().toString())
@@ -192,6 +201,7 @@ public UserDTO uploadProfileImage(Long id, MultipartFile file) throws IOExceptio
                 .build();
     }
 
+    // Converts a UserDTO to User entity
     private User convertToEntity(UserDTO userDTO) {
         return User.builder()
                 .id(userDTO.getId() != null ? Long.parseLong(userDTO.getId()) : null)
@@ -204,6 +214,7 @@ public UserDTO uploadProfileImage(Long id, MultipartFile file) throws IOExceptio
                 .build();
     }
 
+    // Converts a Publications entity to PublicationsDTO
     private PublicationsDTO convertPublicationToDTO(Publications publication) {
         return PublicationsDTO.builder()
                 .id(publication.getId())
@@ -217,6 +228,7 @@ public UserDTO uploadProfileImage(Long id, MultipartFile file) throws IOExceptio
                 .build();
     }
 
+    // Converts a Comments entity to CommentsDTO
     private CommentsDTO convertCommentToDTO(Comments comment) {
         return CommentsDTO.builder()
                 .id(comment.getId())

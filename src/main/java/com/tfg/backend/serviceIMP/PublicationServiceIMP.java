@@ -25,15 +25,17 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+// Service implementation for managing Publications
 public class PublicationServiceIMP implements PublicationsService {
     private static final Logger logger = LoggerFactory.getLogger(PublicationServiceIMP.class);
 
     @Autowired
-    private PublicationsRepository publicationRepository;
+    private PublicationsRepository publicationRepository; // Repository for publication data
 
     @Autowired
-    private UserRepository userRepository;
+    private UserRepository userRepository; // Repository for user data
 
+    // Retrieves all publications
     @Override
     public List<PublicationsDTO> getAllPublicaciones() {
         try {
@@ -45,6 +47,7 @@ public class PublicationServiceIMP implements PublicationsService {
         }
     }
 
+    // Retrieves a publication by ID
     @Override
     public Optional<PublicationsDTO> getPublicacionById(Long id) {
         try {
@@ -55,6 +58,7 @@ public class PublicationServiceIMP implements PublicationsService {
         }
     }
 
+    // Saves a new publication for a given user ID
     @Override
     @Transactional
     public PublicationsDTO save(PublicationsDTO publicationDTO, Long userId) {
@@ -68,6 +72,7 @@ public class PublicationServiceIMP implements PublicationsService {
         }
     }
 
+    // Updates an existing publication
     @Override
     public PublicationsDTO updatePublicacion(Long id, PublicationsDTO publicationDTO) {
         try {
@@ -82,6 +87,7 @@ public class PublicationServiceIMP implements PublicationsService {
         }
     }
 
+    // Deletes a publication by ID
     @Override
     public void deletePublicacion(Long id) {
         try {
@@ -92,6 +98,7 @@ public class PublicationServiceIMP implements PublicationsService {
         }
     }
 
+    // Retrieves publications by user ID
     @Override
     public List<PublicationsDTO> getPublicacionesByUserId(Long userId) {
         try {
@@ -105,6 +112,7 @@ public class PublicationServiceIMP implements PublicationsService {
         }
     }
 
+    // Toggles the like status of a publication by publication ID and user ID
     public void toggleLike(Long publicationId, Long userId) {
         try {
             Publications publication = publicationRepository.findById(publicationId)
@@ -126,6 +134,7 @@ public class PublicationServiceIMP implements PublicationsService {
         }
     }
 
+    // Converts a Publications entity to PublicationsDTO
     private PublicationsDTO convertToDTO(Publications publication) {
         return PublicationsDTO.builder()
                 .id(publication.getId())
@@ -142,6 +151,7 @@ public class PublicationServiceIMP implements PublicationsService {
                 .build();
     }
 
+    // Converts a Comments entity to CommentsDTO
     private CommentsDTO convertCommentToDTO(Comments comment) {
         return CommentsDTO.builder()
                 .id(comment.getId())
@@ -152,6 +162,7 @@ public class PublicationServiceIMP implements PublicationsService {
                 .build();
     }
 
+    // Converts a PublicationsDTO to Publications entity
     private Publications convertToEntity(PublicationsDTO dto, Long userId) {
         Publications publication = new Publications();
         if (dto.getId() != null) {
