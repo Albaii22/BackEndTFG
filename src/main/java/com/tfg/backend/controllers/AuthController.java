@@ -27,6 +27,7 @@ public class AuthController {
     @Autowired
     private final AuthService authService;
     
+    // Endpoint to log in a user
     @Operation(summary = "Log in a user", description = "Returns the authentication response", tags = { "auth" })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully logged in", content = @Content(schema = @Schema(implementation = AuthResponse.class))),
@@ -40,6 +41,7 @@ public class AuthController {
         return ResponseEntity.ok(authService.login(request));
     }
 
+    // Endpoint to register a new user
     @Operation(summary = "Register a new user", description = "Returns the authentication response", tags = { "auth" })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully registered", content = @Content(schema = @Schema(implementation = AuthResponse.class))),

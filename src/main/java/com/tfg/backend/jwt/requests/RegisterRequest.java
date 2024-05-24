@@ -11,9 +11,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+// Request object for user registration
 public class RegisterRequest {
-    String username;
-    String password;
-    String email;
-    Date registrationDate; 
+    String username; // User's username
+    String password; // User's password
+    String email; // User's email address
+    Date registrationDate; // Date of registration
 }

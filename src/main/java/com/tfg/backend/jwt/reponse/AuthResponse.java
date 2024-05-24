@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+// Response object for authentication containing a JWT token
 public class AuthResponse {
-    String token; 
+    String token; // JWT token
 }

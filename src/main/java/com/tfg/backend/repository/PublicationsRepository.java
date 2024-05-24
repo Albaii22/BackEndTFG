@@ -9,6 +9,8 @@ import com.tfg.backend.entities.Publications;
 import com.tfg.backend.entities.User;
 
 @Repository
-public interface PublicationsRepository extends JpaRepository<Publications, Long>{
+// Repository interface for managing Publications entities
+public interface PublicationsRepository extends JpaRepository<Publications, Long> {
+    // Finds publications by user
     List<Publications> findByUser(User user);
 }

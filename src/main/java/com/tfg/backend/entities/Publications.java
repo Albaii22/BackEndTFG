@@ -19,25 +19,25 @@ import java.util.HashSet;
 public class Publications {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id; // Unique identifier for the publication
 
-    private String content;
+    private String content; // Content of the publication
     
     @Temporal(TemporalType.TIMESTAMP)
-    private Date timestamp;
+    private Date timestamp; // Timestamp when the publication was created
     
-    private int vote_count;
+    private int vote_count; // Count of votes for the publication
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @JsonBackReference
     @ToString.Exclude
-    private User user;
+    private User user; // User who posted the publication
 
     @OneToMany(mappedBy = "publication", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     @ToString.Exclude
-    private List<Comments> comments;
+    private List<Comments> comments; // List of comments associated with the publication
 
     @ManyToMany
     @JoinTable(
@@ -45,5 +45,5 @@ public class Publications {
         joinColumns = @JoinColumn(name = "publication_id"),
         inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    private Set<User> likedBy = new HashSet<>();
+    private Set<User> likedBy = new HashSet<>(); // Set of users who liked the publication
 }

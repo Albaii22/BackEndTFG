@@ -15,19 +15,19 @@ import java.util.Date;
 public class Comments {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id; // Unique identifier for the comment
 
-    private String content;
+    private String content; // Content of the comment
     @Temporal(TemporalType.TIMESTAMP)
-    private Date timestamp;
+    private Date timestamp; // Timestamp when the comment was created
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "publication_id")
     @JsonBackReference
-    private Publications publication;
+    private Publications publication; // Publication associated with the comment
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @JsonBackReference
-    private User user;
+    private User user; // User who posted the comment
 }

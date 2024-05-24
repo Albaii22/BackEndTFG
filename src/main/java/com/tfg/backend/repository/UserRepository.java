@@ -8,9 +8,11 @@ import org.springframework.stereotype.Repository;
 import com.tfg.backend.entities.User;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long>{
-
+// Repository interface for managing User entities
+public interface UserRepository extends JpaRepository<User, Long> {
+    // Finds a user by username
     Optional<User> findByUsername(String username);
+    
+    // Finds a user by email
     Optional<User> findByEmail(String email);
-
 }

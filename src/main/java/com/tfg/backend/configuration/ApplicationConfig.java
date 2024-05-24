@@ -1,6 +1,5 @@
 package com.tfg.backend.configuration;
 
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,12 +21,14 @@ public class ApplicationConfig {
 
     private final UserRepository userRepository;
 
+    // Provides the authentication manager
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception
     {
         return config.getAuthenticationManager();
     }
 
+    // Provides the authentication provider
     @Bean
     public AuthenticationProvider authenticationProvider()
     {
@@ -37,16 +38,17 @@ public class ApplicationConfig {
         return authenticationProvider;
     }
 
+    // Provides the password encoder for secure password storage
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    // Provides the user details service to retrieve user information
     @Bean
     public UserDetailsService userDetailService() {
         return username -> userRepository.findByUsername(username)
-        .orElseThrow(()-> new UsernameNotFoundException("User not fournd"));
+        .orElseThrow(()-> new UsernameNotFoundException("User not found"));
     }
 
 }
-

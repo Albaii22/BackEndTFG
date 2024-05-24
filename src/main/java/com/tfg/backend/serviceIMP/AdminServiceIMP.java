@@ -16,13 +16,15 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+// Service implementation for managing Admins
 public class AdminServiceIMP implements AdminService {
 
     private static final Logger logger = LoggerFactory.getLogger(AdminServiceIMP.class);
 
     @Autowired
-    private AdminRepository adminRepository;
+    private AdminRepository adminRepository; // Repository for admin data
 
+    // Retrieves all admins
     @Override
     public List<AdminDTO> getAllAdmins() {
         try {
@@ -36,6 +38,7 @@ public class AdminServiceIMP implements AdminService {
         }
     }
 
+    // Retrieves an admin by ID
     @Override
     public Optional<AdminDTO> getAdminById(Long id) {
         try {
@@ -47,6 +50,7 @@ public class AdminServiceIMP implements AdminService {
         }
     }
 
+    // Creates a new admin
     @Override
     public AdminDTO createAdmin(AdminDTO adminDTO) {
         try {
@@ -59,6 +63,7 @@ public class AdminServiceIMP implements AdminService {
         }
     }
 
+    // Updates an existing admin
     @Override
     public AdminDTO updateAdmin(Long id, AdminDTO adminDTO) {
         return adminRepository.findById(id).map(existingAdmin -> {
@@ -70,6 +75,7 @@ public class AdminServiceIMP implements AdminService {
         });
     }
 
+    // Deletes an admin by ID
     @Override
     public void deleteAdmin(Long id) {
         try {
@@ -79,12 +85,14 @@ public class AdminServiceIMP implements AdminService {
         }
     }
 
+    // Converts an Admin entity to AdminDTO
     private AdminDTO convertToDTO(Admin admin) {
         return AdminDTO.builder()
                        .username(admin.getUsername())
                        .build();
     }
 
+    // Converts an AdminDTO to Admin entity
     private Admin convertToEntity(AdminDTO adminDTO) {
         return Admin.builder()
                     .username(adminDTO.getUsername())

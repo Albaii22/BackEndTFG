@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import com.tfg.backend.entities.Admin;
 
 @Repository
-public interface AdminRepository extends JpaRepository<Admin , Long>{
+// Repository interface for managing Admin entities
+public interface AdminRepository extends JpaRepository<Admin, Long> {
 
 }

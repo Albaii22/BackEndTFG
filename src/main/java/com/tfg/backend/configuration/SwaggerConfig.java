@@ -10,6 +10,7 @@ import io.swagger.v3.oas.models.OpenAPI;
 @Configuration
 @OpenAPIDefinition(info = @Info(title = "QuizzMania", version = "v1"))
 public class SwaggerConfig {
+    // Provides a customized OpenAPI object for Swagger documentation
     @Bean
     public OpenAPI customizeOpenAPI() {
         return new OpenAPI();
