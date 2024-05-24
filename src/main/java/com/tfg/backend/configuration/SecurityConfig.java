@@ -19,7 +19,7 @@ public class SecurityConfig implements WebMvcConfigurer{
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("image/**")
+        registry.addResourceHandler("/image/**")
                 .addResourceLocations("file:" + uploadDir);
     }
 
