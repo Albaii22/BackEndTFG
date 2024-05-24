@@ -161,9 +161,9 @@ To start the application, execute the following command:
 mvn spring-boot:run
 ```
 
-The application will be available at http://localhost:8080.
+The application will be available at http://localhost:8082.
 
 Swagger Documentation
-Swagger UI is available at http://localhost:8080/swagger-ui.html for API documentation and testing.
+Swagger UI is available at http://localhost:8082/swagger-ui.html for API documentation and testing.
 
 
