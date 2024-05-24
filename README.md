@@ -159,5 +159,11 @@ To start the application, execute the following command:
 
 ```bash
 mvn spring-boot:run
+```
+
+The application will be available at http://localhost:8080.
+
+Swagger Documentation
+Swagger UI is available at http://localhost:8080/swagger-ui.html for API documentation and testing.
 
 
